@@ -1,6 +1,3 @@
-// Date
-var datetime = new Date();
-
 // Connexion
 var protocol = require('./orchestra-protocol');
 
@@ -22,7 +19,7 @@ function Instrument(instrument){
         console.log('trumpet');
         sound = 'pouet';
         break;
-    case 'piano':
+    case 'flute':
         console.log('flute');
         sound = 'trulu';
         break;
@@ -32,7 +29,7 @@ function Instrument(instrument){
         break;
     case 'drum':
         console.log('drum');
-        sound = 'boumboum';
+        sound = 'boum-boum';
         break;
     }
 
@@ -46,8 +43,7 @@ function Instrument(instrument){
     // JSON
     var json = {
         'uuid' : UUID,
-        'instrument' : instrument,
-        'activeSince' : datetime
+        'sound' : sound
     };
 
     // Send datagram
