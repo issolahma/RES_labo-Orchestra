@@ -1,0 +1,23 @@
+{
+  "name": "res-udp",
+  "version": "0.1.0",
+  "description": "Labo udp - RES",
+  "main": "instrument.js",
+  "dependencies": {
+    "uid-generator": "^2.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/issolahma/RES_labo-Orchestra.git"
+  },
+  "author": "Godi Matthieu, Issolah Maude",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/issolahma/RES_labo-Orchestra/issues"
+  },
+  "homepage": "https://github.com/issolahma/RES_labo-Orchestra#readme"
+}
