@@ -34,11 +34,8 @@ function Instrument(instrument){
     }
 
     // UUID
-    const UIDGenerator = require('uid-generator');
-    const uidgen = new UIDGenerator(); // Default is a 128-bit UID encoded in base58
-
-    // Sync
-    const UUID = uidgen.generateSync();
+    const { v4: uuidv4 } = require('uuid');
+    const UUID = uuidv4();
 
     // JSON
     var json = {
@@ -64,4 +61,5 @@ console.log('instrument is: ', instrument);
 var inst = new Instrument(instrument);
 // https://nodejs.org/en/knowledge/command-line/how-to-parse-command-line-arguments/
 // https://www.npmjs.com/package/uid-generator
+// https://www.npmjs.com/package/uuid
 
