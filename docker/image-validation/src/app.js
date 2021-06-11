@@ -20,6 +20,7 @@ var chance = new Chance();
  * provided by our own Docker utility module (which uses the 'dokerode' npm module)
  */
 function startAuditor(auditorHasStarted) {
+	console.log('Start autitor');
 	DockerUtils.startContainer('res/auditor', [], auditorHasStarted);
 }
 
@@ -28,6 +29,7 @@ function startAuditor(auditorHasStarted) {
  * provided by our own Docker utility module (which uses the 'dokerode' npm module)
  */
 function startRandomMusician(musicianHasStarted) {
+	console.log('startRandomMusician');
 	var instruments = new Map();
 	instruments.set("piano", "ti-ta-ti");
 	instruments.set("trumpet", "pouet");
@@ -44,17 +46,21 @@ function startRandomMusician(musicianHasStarted) {
  */
 function askAuditorForActiveInstruments(activeInstrumentsHaveBeenRetrieved) {
 	function invokeTcpInterface(auditorContainer, activeMusiciansHaveBeenFetched) {
+		console.log('askAuditorForActiveInstruments');
 		//console.log(JSON.stringify(auditorContainer, null, ' '));
 		var auditorIPAddress = auditorContainer.NetworkSettings.Networks.bridge.IPAddress;
 		var client = new net.Socket();
 		var payload = "";
 		var PORT = 2205;
 		client.connect(PORT, auditorIPAddress, function() {
+			console.log('connect ip: ' + auditorIPAddress);
 		});
 		client.on('data', function(data) {
+			console.log('payload data: ' + payload);
 			payload = payload + data;
 		});
 		client.on('end', function() {
+			console.log('payload end: ' + payload);
 			var instruments = JSON.parse(payload);
 			client.destroy();
 			activeMusiciansHaveBeenFetched(null, instruments);

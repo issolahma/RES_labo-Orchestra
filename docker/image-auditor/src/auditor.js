@@ -24,7 +24,7 @@ s.bind(protocol.PROTOCOL_PORT, function() {
  * This call back is invoked when a new datagram has arrived.
  */
 s.on('message', function(msg, source) {
-	console.log("Data has arrived: " + msg + ". Source port: " + source.port);
+	//console.log("Data has arrived: " + msg + ". Source port: " + source.port);
   var data = JSON.parse(msg);
   orchestraAdd(data);
 });
@@ -32,17 +32,22 @@ s.on('message', function(msg, source) {
 var moment = require('moment');
 
 // Dictionary
-var orchestra = {};
+var orchestra = [];
 
 // Add musician to orchestra
 function orchestraAdd(data){
-  
-  for(var key in orchestra){
-    if(data.uuid.localeCompare(key) == 0){
+  var here = false;
+  orchestra.forEach(function(item) {
+    if(item.uuid.localeCompare(data.uuid) == 0){
       // update time
-      orchestra[key][2] = moment();
+      item.lastActive = moment();
+      here = true;
       return;
     }
+  });
+
+  if (here == true){
+    return;
   }
 
   console.log("Add: " + data.uuid);
@@ -67,34 +72,38 @@ function orchestraAdd(data){
 
   }
 
-  orchestra[data.uuid] = [data.uuid, instrument, moment()];
+  var tmp = {};
+  tmp['uuid'] = data.uuid;
+  tmp['instrument'] = instrument;
+  tmp['activeSince'] = moment();
+  tmp['lastActive'] = moment();
+
+  orchestra.push(tmp);
 }
 
-function updateO(){
-  
-  //var then = moment("2021-06-10T17:37:21+02:00");
-  //var now = moment();
-  
-  console.log('update');
-  for(var key in orchestra){
-    console.log('diff: ' + moment().diff(orchestra[key][2], 's'));
-    if (moment().diff(orchestra[key][2], 's') > 5){
-      console.log('Delete: ' + key);
-      delete orchestra[key];
+function updateOrchestra(){
+  orchestra.forEach(function(item, index) {
+    if(moment().diff(item.lastActive, 's') > 5){
+      console.log('Delete: ' + item.uuid);
+      orchestra.splice(index, 1);
       return;
     }
-  }
+  });
 }
 
-setInterval(updateO, 5000);
+setInterval(updateOrchestra, 5000);
 
-var express = require('express');
-var app = express();
 
-app.get('/', function(req, res) {
-  res.send( orchestra );
+var net = require('net');
+
+var server = net.createServer(function(socket) {
+  var data = Buffer.from(JSON.stringify(orchestra));
+	socket.write(data);
+  console.log('Send data');
+	socket.pipe(socket);
+  socket.end();
+
 });
 
-app.listen(2205, function() {
-  console.log('Accepting HTTP requests on port 2205');
-});
+
+server.listen(protocol.PROTOCOL_PORT);
