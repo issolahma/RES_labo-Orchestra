@@ -91,7 +91,7 @@ function updateOrchestra(){
   });
 }
 
-setInterval(updateOrchestra, 5000);
+setInterval(updateOrchestra, 3000);
 
 
 var net = require('net');
