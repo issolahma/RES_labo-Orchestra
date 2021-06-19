@@ -6,6 +6,9 @@ var s = dgram.createSocket('udp4');
 
 
 function Instrument(instrument){
+    var moment = require('moment');
+    var dateTime = moment();
+
     this.instrument = instrument;
 
     var sound;
@@ -40,7 +43,8 @@ function Instrument(instrument){
     // JSON
     var json = {
         'uuid' : UUID,
-        'sound' : sound
+        'sound' : sound,
+        'activeSince' : dateTime
     };
 
     // Send datagram

@@ -4,6 +4,7 @@
   "description": "Labo udp - RES",
   "main": "instrument.js",
   "dependencies": {
+    "moment": "^2.29.1",
     "uuid": "^8.3.2"
   },
   "devDependencies": {},

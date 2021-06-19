@@ -75,7 +75,7 @@ function orchestraAdd(data){
   var tmp = {};
   tmp['uuid'] = data.uuid;
   tmp['instrument'] = instrument;
-  tmp['activeSince'] = moment();
+  tmp['activeSince'] = data.activeSince;
   tmp['lastActive'] = moment();
 
   orchestra.push(tmp);
