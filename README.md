@@ -104,15 +104,15 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 | #  | Topic |
 | --- | --- |
 |Question | How can we represent the system in an **architecture diagram**, which gives information both about the Docker containers, the communication protocols and the commands? |
-| | *Insert your diagram here...* |
+| | <img src="images/RES-orchestre.png" height="300" /> |
 |Question | Who is going to **send UDP datagrams** and **when**? |
-| | Chaque container musicien envoi un datagramme  par seconde |
+| | Chaque container musicien envoi un datagramme par seconde |
 |Question | Who is going to **listen for UDP datagrams** and what should happen when a datagram is received? |
-| | Le container auditeur. Si le datagramme contient un uuid connu, il met  à jour son heure de dernier message, sinon, il l'ajoute au dictionnaire qui liste les musiciens actifs. |
+| | Le container auditeur. Si le datagramme contient un uuid connu, il met à jour son heure de dernier message, sinon, il l'ajoute au dictionnaire qui liste les musiciens actifs. |
 |Question | What **payload** should we put in the UDP datagrams? |
-| | UUID et son de l'instrument |
+| | L'UUID du musicien, le son de son instrument, ainsi que la date/heure de création du container. |
 |Question | What **data structures** do we need in the UDP sender and receiver? When will we update these data structures? When will we query these data structures? |
-| | JSON. Les données envoyées par les musiciens ne sont jamais modifiées. L'auditeur modifie la date/heure des entrées du dictionnaire. L'auditeur retourne la liste des musiciens lorsqu'on lui fait une requête GET /. |
+| | Nous envoyons un objet JSON formaté en string. <br/>Les données envoyées par les musiciens ne sont jamais modifiées.<br/>L'auditeur crée un tableau de musicien représentant l'orchestre (JSON). Ce tableau contient les donnée envoyées par les musiciens, ainsi que la date/heure de dernière activité connue. L'auditeur modifie cette date/heure lors du contrôle des musiciens toujours actif. <br/>L'auditeur retourne la liste des musiciens lorsqu'on lui fait une requête TCP. |
 
 
 ## Task 2: implement a "musician" Node.js application
@@ -124,11 +124,11 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 |Question | What is **npm**?  |
 | | npm est le gestionnaire de paquets officiel de Node.js |
 |Question | What is the `npm install` command and what is the purpose of the `--save` flag?  |
-| | install un nouveau module. `--save` pour sauver ce module en local ce qui nous permet de le copier dans le container par la suite. |
+| | Cette commande installe un nouveau module NodeJs. `--save` pour sauver ce module en local ce qui nous permet de le copier dans le container par la suite. |
 |Question | How can we use the `https://www.npmjs.com/` web site?  |
 |  | En utilisant la barre de recherche principale, pour chercher des modules par exemple. |
 |Question | In JavaScript, how can we **generate a UUID** compliant with RFC4122? |
-| | https://www.npmjs.com/package/uuid const { v4: uuidv4 } = require('uuid'); uuidv4(); |
+| | const { v4: uuidv4 } = require('uuid');<br/>uuidv4();<br/>https://www.npmjs.com/package/uuid |
 |Question | In Node.js, how can we execute a function on a **periodic** basis? |
 | | setInterval(<function>, <time ms>); |
 |Question | In Node.js, how can we **emit UDP datagrams**? |
@@ -146,11 +146,11 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 |Question | How can we use the `ENTRYPOINT` statement in our Dockerfile?  |
 | | `ENTRYPOINT ["node", "/opt/app/instrument.js"]`, comme avec `CMD []` |
 |Question | After building our Docker image, how do we use it to **run containers**?  |
-| | `docker run -d res/musician piano` "piano" est passé en argument à l'entrypoint -> le script js |
+| | `docker run -d res/musician piano`<br/>"piano" est passé en argument à l'entrypoint -> le script js |
 |Question | How do we get the list of all **running containers**?  |
 | | `docker ps ` |
 |Question | How do we **stop/kill** one running container?  |
-| | `docker stop <id/name>`/ `docker kill <id/name>` |
+| | `docker stop <id/name>`<br/>`docker kill <id/name>` |
 |Question | How can we check that our running containers are effectively sending UDP datagrams?  |
 | | Avec Wireshark, on vérifie ce qui est envoyé avec l'ip du container. |
 
@@ -164,11 +164,11 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 |Question | How can we use the `Map` built-in object introduced in ECMAScript 6 to implement a **dictionary**?  |
 | | Comme un tableau de clé: valeur |
 |Question | How can we use the `Moment.js` npm module to help us with **date manipulations** and formatting?  |
-| | *Enter your response here...* |
+| | Moment permet de comparer facilement deux date pour avoir une différence de temps, avec l'unité voulue.<br/>`if(moment().diff(item.lastActive, 's') > 5)` calcule le nombres de secondes séparant le temps présent avec le temps stocké dans `lastActive`. |
 |Question | When and how do we **get rid of inactive players**?  |
-| | *Enter your response here...* |
+| | Chaque trois secondes l'auditeur contrôle la liste de musicien. Si le temps de dernière activité est supérieur à 5 seconde, le musicien est supprimé de la liste.<br/>`orchestra.forEach(function(item, index)` On parcours la liste des musiciens.<br/>`orchestra.splice(index, 1);` Si la condition de temps est validée, on supprime l'élément à l'index `index` |
 |Question | How do I implement a **simple TCP server** in Node.js?  |
-| | *Enter your response here...* |
+|  | Avec le module `net`: `var server = net.createServer(function(socket)` |
 
 
 ## Task 5: package the "auditor" app in a Docker image
@@ -176,7 +176,7 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 | #  | Topic |
 | ---  | --- |
 |Question | How do we validate that the whole system works, once we have built our Docker image? |
-| | *Enter your response here...* |
+| | Dans un premier temps en utilisant Wireshark pour valider la communication UDP entre les containers créés, puis en lançant le script de validation.<br/>On peut aussi lire les logs des containers, ou afficher des messages dans les logs pour debugger. |
 
 
 ## Constraints
